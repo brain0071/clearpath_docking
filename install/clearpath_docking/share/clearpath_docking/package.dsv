@@ -1,0 +1,5 @@
+source;share/clearpath_docking/local_setup.bash
+source;share/clearpath_docking/local_setup.dsv
+source;share/clearpath_docking/local_setup.ps1
+source;share/clearpath_docking/local_setup.sh
+source;share/clearpath_docking/local_setup.zsh
