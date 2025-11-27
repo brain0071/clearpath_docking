@@ -9,6 +9,9 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
+set(TEKNIC_SDK_INCLUDE_DIR
+  /home/naodai/Workspace/rotary/docking/Linux_Software/inc/inc-pub
+)
 
 add_executable(clearpath_node 
               src/clearpath_node.cpp
@@ -22,6 +25,12 @@ ament_target_dependencies(clearpath_node
 target_include_directories(clearpath_node
   PUBLIC
     include
+    ${TEKNIC_SDK_INCLUDE_DIR}  
+)
+
+target_link_libraries(clearpath_node
+  # PRIVATE
+    /usr/local/lib/libsFoundation20.so.1
 )
 
 if(BUILD_TESTING)
