@@ -6,6 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
+find_package(rosidl_default_generators REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
@@ -16,7 +17,6 @@ set(TEKNIC_SDK_INCLUDE_DIR
 add_executable(clearpath_node 
               src/clearpath_node.cpp
               lib/clearpath_motor.cpp)
-
 
 ament_target_dependencies(clearpath_node
   rclcpp 
@@ -33,6 +33,19 @@ target_link_libraries(clearpath_node
     /usr/local/lib/libsFoundation20.so.1
 )
 
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/ClearpathState.msg"
+  "srv/AxisEnable.srv"
+  DEPENDENCIES std_msgs geometry_msgs  
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+
+rosidl_target_interfaces(clearpath_node
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -48,7 +61,6 @@ endif()
 install(TARGETS clearpath_node
   DESTINATION lib/${PROJECT_NAME}
 )
-
 
 install(
   DIRECTORY launch
