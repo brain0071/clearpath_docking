@@ -1,4 +1,4 @@
-#include "clearpath_docking/motor_hw_base.hpp"
+#include "clearpath_docking/motor_hw_base.h"
 
 namespace clearpath_docking
 {

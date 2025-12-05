@@ -2,7 +2,7 @@
 # Message for "raw" state from a Clearpath SC motor
 #
 
-Header header
+std_msgs/Header header
 
 int32 serial_number
 

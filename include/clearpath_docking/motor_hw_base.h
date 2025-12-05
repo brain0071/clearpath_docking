@@ -5,7 +5,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "clearpath_docking/motor_state.hpp"
+#include "clearpath_docking/motor_state.h"
 #include "clearpath_docking/srv/axis_enable.hpp"
 
 namespace clearpath_docking
@@ -15,6 +15,7 @@ namespace clearpath_docking
         using SharedPtr = std::shared_ptr<MotorHwBase>;
         using AxisEnable = clearpath_docking::srv::AxisEnable;
 
+    public:
         explicit MotorHwBase(const std::string &name,
                              const rclcpp::Node::SharedPtr &node);
 

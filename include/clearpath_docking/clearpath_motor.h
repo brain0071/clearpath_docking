@@ -14,7 +14,7 @@
 #include <time.h>
 #include <memory>
 #include <string>
-#include "Clearpath/inc-pub/pubSysCls.h"
+#include "pubSysCls.h"
 #include "clearpath_docking/encoder_value.h"
 
 namespace clearpath_docking

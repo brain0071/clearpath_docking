@@ -1,37 +1,43 @@
+//
+//
+// Copyright 2025 University of Washington
+
 #pragma once
+
 #include <memory>
 #include <string>
 #include <vector>
-#include "Clearpath/inc-pub/pubSysCls.h"
+
+#include "pubSysCls.h"
 #include "clearpath_docking/clearpath_motor.h"
 
-namespace clearpath_docking
-{
+namespace clearpath_docking {
 
-    class Manager
+class Manager {
+ public:
+  Manager();
+  Manager(const Manager &) = delete;
 
-    {
+  ~Manager();
 
-    private:
-        sFnd::sFnd::SysManager *_mgr;
-        size_t _numPorts;
-        std::vector<std::shared_ptr<ClearpathMotor>> _axes;
+  // Opens all ports and build a list of all nodes
+  void initialize();
+  void close();
 
-    public:
-        Manager();
-        Manager(const Manager &) = delete;
-        ~Manager();
+  size_t numPorts() const { return _numPorts; }
 
-        void initialize();
-        void close();
+  const std::vector<ClearpathMotor::Ptr> &axes() const { return _axes; }
 
-        size_t numPorts() const { return _numPorts; }
+  void getShutdownInfo();
+  void setGlobalShutdown(bool enabled);
 
-        // return a motor
-        const std::vector<ClearpathMotor::Ptr> &axes() const { return _axes; }
+ private:
+  // Yes, a bare pointer.  Lifecycle of the SysManager singleton is
+  // managed in the Clearpath library itself (?)
+  sFnd::SysManager *_mgr;
 
-        // void getShutdownInfo();
-        // void setGlobalShutdown(bool enabled);
-    };
+  size_t _numPorts;
+  std::vector<std::shared_ptr<ClearpathMotor>> _axes;
+};
 
-}
+}  

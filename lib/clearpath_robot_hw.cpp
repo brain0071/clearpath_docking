@@ -1,4 +1,4 @@
-#include "clearpath_docking/clearpath_robot_hw.hpp"
+#include "clearpath_docking/clearpath_robot_hw.h"
 
 #include <cstdio>
 #include <iostream>
@@ -11,14 +11,11 @@
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "controller_manager/controller_manager.hpp"
-#include "diagnostic_updater/diagnostic_updater.hpp"
 
 namespace clearpath_docking
 {
     using sFnd::IInfo;
     using sFnd::mnErr;
-    const float ClearpathRobotHW::DiagnosticUpdateTimerPeriod = 0.1;
-    const double ClearpathRobotHW::ControlLoopTimerPeriod = 0.1;
 
     ClearpathRobotHW::ClearpathRobotHW()
         : manager_(), control_mode_(Control_Idle) {}
@@ -38,6 +35,11 @@ namespace clearpath_docking
         {
             RCLCPP_ERROR(rclcpp::get_logger("ClearpathRobotHW"), "Clearpath Robot on_init() failed");
             return hardware_interface::CallbackReturn::ERROR;
+        }
+
+        if (!node_)
+        {
+            node_ = std::make_shared<rclcpp::Node>("clearpath_motor_hw");
         }
 
         int sn = -1;
@@ -80,16 +82,16 @@ namespace clearpath_docking
                 IInfo &info_axis(axis->getInfo());
                 RCLCPP_INFO(rclcpp::get_logger("ClearpathRobotHW"),
                             "  %s : s/n %d : f/w %s",
-                            info_axis.Model.Value().c_str(),
+                            info_axis.Model.Value(),
                             static_cast<int>(info_axis.SerialNumber.Value()),
-                            info_axis.FirmwareVersion.Value().c_str());
+                            info_axis.FirmwareVersion.Value());
 
                 if (static_cast<int>(info_axis.SerialNumber.Value()) == sn)
                 {
                     RCLCPP_INFO(rclcpp::get_logger("ClearpathRobotHW"),
                                 "Found motor with s/n %d", sn);
-
-                    motor_ = std::make_shared<ClearpathMotorHw>(JointNames[0], axis);
+                    // TODO: just one motor (three)
+                    motor_ = std::make_shared<ClearpathMotorHw>(JointNames[0], node_, axis);
                     break;
                 }
             }
@@ -233,3 +235,9 @@ namespace clearpath_docking
     }
 
 }
+
+#include "pluginlib/class_list_macros.hpp"
+
+PLUGINLIB_EXPORT_CLASS(
+    clearpath_docking::ClearpathRobotHW,
+    hardware_interface::SystemInterface)

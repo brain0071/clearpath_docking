@@ -26,6 +26,7 @@ namespace clearpath_docking
     {
     public:
         using Ptr = std::shared_ptr<ClearpathMotorHw>;
+
         static constexpr double DiagnosticUpdateTimerPeriod = 0.1;
         ClearpathMotorHw(const std::string &name,
                          const rclcpp::Node::SharedPtr &node,
@@ -57,11 +58,12 @@ namespace clearpath_docking
         rclcpp::Node::SharedPtr node_;
         rclcpp::Clock::SharedPtr clock_;
         ClearpathMotor::Ptr axis_;
+        std::string name_;
 
         std::shared_ptr<diagnostic_updater::Updater> diagnostic_updater_;
         std::shared_ptr<diagnostic_updater::TopicDiagnostic> state_freq_updater_;
 
-        rclcpp::Publisher<testbed_msgs::msg::ClearpathState>::SharedPtr clearpath_publisher_;
+        rclcpp::Publisher<clearpath_docking::msg::ClearpathState>::SharedPtr clearpath_publisher_;
         rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_handle_;
 
         std::mutex block_mutex_;

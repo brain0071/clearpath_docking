@@ -1,6 +1,6 @@
 #pragma once
 
-#include "clearpath_docking/clearpath_motor.hpp"
+#include "clearpath_docking/clearpath_motor.h"
 
 namespace clearpath_docking
 {

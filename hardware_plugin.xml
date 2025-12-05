@@ -1,0 +1,11 @@
+<library path="clearpath_robot_hw">
+  <class
+    name="clearpath_docking/ClearpathRobotHW"
+    type="clearpath_docking::ClearpathRobotHW"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      ClearPath SC single-axis hardware interface.
+    </description>
+  </class>
+</library>
+

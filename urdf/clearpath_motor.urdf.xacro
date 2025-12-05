@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="clearpath_motor_robot">
+
+  <link name="base_link"/>
+  <link name="motor_link"/>
+
+  <joint name="motor" type="continuous">
+    <parent link="base_link"/>
+    <child link="motor_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <ros2_control name="ClearpathSystem" type="system">
+    <hardware>
+      <plugin>clearpath_docking/ClearpathRobotHW</plugin>
+      <param name="sn">18300282</param>
+    </hardware>
+
+
+    <joint name="motor">
+      <command_interface name="position"/>
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="current"/>
+    </joint>
+
+  </ros2_control>
+
+</robot>

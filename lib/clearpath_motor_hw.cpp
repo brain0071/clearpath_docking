@@ -1,4 +1,4 @@
-#include "clearpath_docking/clearpath_motor_hw.hpp"
+#include "clearpath_docking/clearpath_motor_hw.h"
 
 #include <chrono>
 #include <memory>
@@ -18,11 +18,12 @@ namespace clearpath_docking
                                        const ClearpathMotor::Ptr &axis)
         : MotorHwBase(name, node),
           node_(node),
+          name_(name), 
           clock_(node_->get_clock()),
           axis_(axis)
     {
         auto logger = node_->get_logger();
-        RCLCPP_INFO_STREAM(logger, " === Configuring " << _name << " ===");
+        RCLCPP_INFO_STREAM(logger, " === Configuring " << name_ << " ===");
         RCLCPP_INFO_STREAM(logger, " ..     Initial velocity limit "
                                        << axis_->velocityLimit() << " rad/s");
         RCLCPP_INFO_STREAM(logger, " .. Initial acceleration limit "
@@ -39,12 +40,12 @@ namespace clearpath_docking
         declare_and_setup_parameters();
         diagnostic_updater_ = std::make_shared<diagnostic_updater::Updater>(node_,
                                                                             DiagnosticUpdateTimerPeriod);
-        diagnostic_updater_->setHardwareID(_name);
+        diagnostic_updater_->setHardwareID(name_);
 
         diagnostic_updater_->add("state", [this](diagnostic_updater::DiagnosticStatusWrapper &stat)
                                  { stat.add("state", stateAsString()); });
 
-        clearpath_publisher_ = node_->create_publisher<testbed_msgs::msg::ClearpathState>(_name + "/clearpath_state", 10);
+        clearpath_publisher_ = node_->create_publisher<clearpath_docking::msg::ClearpathState>(name_ + "/clearpath_state", 10);
 
         double min_freq = 0.5;
         double max_freq = 2.0;
@@ -53,13 +54,13 @@ namespace clearpath_docking
                                                                                     diagnostic_updater::FrequencyStatusParam(&min_freq, &max_freq, 0.1, 10),
                                                                                     diagnostic_updater::TimeStampStatusParam(),
                                                                                     clock_);
-        RCLCPP_INFO(logger, "ClearpathMotorHw for '%s' initialized.", _name.c_str());
+        RCLCPP_INFO(logger, "ClearpathMotorHw for '%s' initialized.", name_.c_str());
     }
 
     ClearpathMotorHw::~ClearpathMotorHw()
     {
         auto logger = node_->get_logger();
-        RCLCPP_DEBUG_STREAM(logger, "Disabling " << _name);
+        RCLCPP_DEBUG_STREAM(logger, "Disabling " << name_);
         disable();
     }
 
@@ -255,24 +256,24 @@ namespace clearpath_docking
 
         auto const after_publish = clock_->now();
 
-        RCLCPP_DEBUG_STREAM(logger, _name << "  Check errors "
+        RCLCPP_DEBUG_STREAM(logger, name_ << "  Check errors "
                                           << (after_check_errors - start).seconds());
-        RCLCPP_DEBUG_STREAM(logger, _name << "     Check pos "
+        RCLCPP_DEBUG_STREAM(logger, name_ << "     Check pos "
                                           << (after_check_pos - after_check_errors)
                                                  .seconds());
-        RCLCPP_DEBUG_STREAM(logger, _name << "     Check vel "
+        RCLCPP_DEBUG_STREAM(logger, name_ << "     Check vel "
                                           << (after_check_vel - after_check_pos)
                                                  .seconds());
         RCLCPP_DEBUG_STREAM(logger,
-                            _name << " Check current "
+                            name_ << " Check current "
                                   << (after_check_current - after_check_vel)
                                          .seconds());
         RCLCPP_DEBUG_STREAM(logger,
-                            _name << "       Publish "
+                            name_ << "       Publish "
                                   << (after_publish - after_check_current)
                                          .seconds());
         RCLCPP_DEBUG_STREAM(logger,
-                            _name << "         Total "
+                            name_ << "         Total "
                                   << (after_publish - start).seconds());
 
         return state;

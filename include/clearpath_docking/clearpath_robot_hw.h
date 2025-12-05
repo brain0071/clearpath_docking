@@ -11,13 +11,9 @@
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <hardware_interface/loaned_state_interface.hpp>
 #include <hardware_interface/loaned_command_interface.hpp>
-
-#include <diagnostic_updater/diagnostic_updater.hpp>
-#include <diagnostic_updater/publisher.hpp>
-
 #include "clearpath_docking/srv/axis_enable.hpp"
-#include "clearpath_docking/manager.hpp"
-#include "clearpath_docking/clearpath_motor_hw.hpp"
+#include "clearpath_docking/manager.h"
+#include "clearpath_docking/clearpath_motor_hw.h"
 
 namespace clearpath_docking
 {
@@ -25,9 +21,7 @@ namespace clearpath_docking
     class ClearpathRobotHW : public hardware_interface::SystemInterface
     {
     public:
-        static const float DiagnosticUpdateTimerPeriod;
-        static const double ControlLoopTimerPeriod;
-
+        
         enum Joint_t
         {
             Clearpath = 0,
@@ -57,12 +51,10 @@ namespace clearpath_docking
         //    std::shared_ptr<clearpath_docking::srv::AxisEnable::Response> res);
 
         rclcpp::Service<clearpath_docking::srv::AxisEnable>::SharedPtr _enableAllServer;
-        JointControlMode control_mode_;
         clearpath_docking::Manager manager_;
+        JointControlMode control_mode_;
         ClearpathMotorHw::Ptr motor_;
-
-        rclcpp::TimerBase::SharedPtr diagnostic_update_timer_;
-        diagnostic_updater::Updater diagnostic_updater_;
+        rclcpp::Node::SharedPtr node_;
 
         std::array<double, NumJoints> joint_position_;
         std::array<double, NumJoints> joint_velocity_;
@@ -72,7 +64,7 @@ namespace clearpath_docking
         std::array<double, NumJoints> joint_velocity_command_;
 
         rclcpp::TimerBase::SharedPtr control_loop_timer_;
-        rclcpp::Duration elapsed_time_;
+        // rclcpp::Duration elapsed_time_;
         std::shared_ptr<controller_manager::ControllerManager> controller_manager_;
     };
 
